@@ -8,7 +8,6 @@ import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Animated, Dimensions, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { OtpInput } from 'react-native-otp-entry';
 
-
 const logo = require('../assets/images/logo-name.png');
 const school = require('../assets/images/school.png');
 const { height, width } = Dimensions.get('screen');
@@ -37,7 +36,7 @@ export default function Index() {
 
             setTimeout(() => {
                 if(token) {
-                    router.push('/(tabs)/dashboard')
+                    router.push('/dashboard')
                 }
 
                 setScreenLoading(false);

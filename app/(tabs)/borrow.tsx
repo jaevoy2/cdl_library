@@ -1,7 +1,4 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { getBookData } from '@/api/books';
 import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useRef, useState } from 'react';
@@ -11,16 +8,27 @@ import {
   Modal,
   ScrollView,
   StyleSheet,
+  Text,
   TouchableOpacity,
-  View
+  View,
+  useColorScheme
 } from 'react-native';
-import { getBookData } from '../api/books';
 
 const { width } = Dimensions.get('window');
+
+// Simple theme configuration
+const getTheme = (isDark: boolean) => ({
+  background: isDark ? '#000' : '#fff',
+  text: isDark ? '#fff' : '#000',
+  tint: isDark ? '#0a7ea4' : '#0a7ea4',
+  icon: isDark ? '#9BA1A6' : '#687076',
+  tabIconDefault: isDark ? '#9BA1A6' : '#687076',
+});
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const theme = getTheme(isDark);
 
   const [permission, requestPermission] = useCameraPermissions();
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -90,7 +98,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       {isCameraActive && permission?.granted ? (
         <CameraView
           style={styles.camera}
@@ -103,13 +111,13 @@ export default function HomeScreen() {
           <View style={styles.cameraOverlay}>
             {/* Top bar with instruction */}
             <View style={styles.topBar}>
-              <ThemedText style={styles.instructionText}>
+              <Text style={styles.instructionText}>
                 Scan Book QR Code
-              </ThemedText>
+              </Text>
               {!isScanning && (
-                <ThemedText style={[styles.instructionText, { marginTop: 10, fontSize: 14 }]}>
+                <Text style={[styles.instructionText, { marginTop: 10, fontSize: 14 }]}>
                   Processing...
-                </ThemedText>
+                </Text>
               )}
             </View>
 
@@ -133,7 +141,7 @@ export default function HomeScreen() {
                 onPress={closeCameraView}
               >
                 <Ionicons name="close-circle" size={60} color="#fff" />
-                <ThemedText style={styles.closeButtonText}>Cancel</ThemedText>
+                <Text style={styles.closeButtonText}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -144,20 +152,22 @@ export default function HomeScreen() {
             style={[
               styles.cameraContainer,
               {
-                backgroundColor: Colors[colorScheme ?? 'light'].background,
-                borderColor: Colors[colorScheme ?? 'light'].icon,
+                backgroundColor: theme.background,
+                borderColor: theme.icon,
               },
             ]}
           >
             <Ionicons
               name="qr-code-outline"
               size={100}
-              color={Colors[colorScheme ?? 'light'].tabIconDefault}
+              color={theme.tabIconDefault}
             />
-            <ThemedText style={styles.disabledText}>Ready to Scan</ThemedText>
-            <ThemedText style={styles.helperText}>
+            <Text style={[styles.disabledText, { color: theme.text }]}>
+              Ready to Scan
+            </Text>
+            <Text style={[styles.helperText, { color: theme.text }]}>
               Point camera at book QR code
-            </ThemedText>
+            </Text>
           </View>
 
           <TouchableOpacity
@@ -165,12 +175,12 @@ export default function HomeScreen() {
               styles.scanButton,
               isDark
                 ? { backgroundColor: 'transparent', borderWidth: 2, borderColor: '#fff' }
-                : { backgroundColor: Colors[colorScheme ?? 'light'].tint },
+                : { backgroundColor: theme.tint },
             ]}
             onPress={handleScanPress}
           >
             <Ionicons name="qr-code" size={24} color="#fff" />
-            <ThemedText style={styles.buttonText}>Scan Book QR</ThemedText>
+            <Text style={styles.buttonText}>Scan Book QR</Text>
           </TouchableOpacity>
         </>
       )}
@@ -182,13 +192,15 @@ export default function HomeScreen() {
         presentationStyle="fullScreen"
         onRequestClose={closeBookModal}
       >
-        <ThemedView style={styles.modalContainer}>
+        <View style={[styles.modalContainer, { backgroundColor: theme.background }]}>
           {/* Header */}
           <View style={styles.modalHeader}>
             <TouchableOpacity onPress={closeBookModal} style={styles.modalCloseButton}>
-              <Ionicons name="close" size={28} color={isDark ? '#fff' : '#000'} />
+              <Ionicons name="close" size={28} color={theme.text} />
             </TouchableOpacity>
-            <ThemedText style={styles.modalHeaderTitle}>Book Details</ThemedText>
+            <Text style={[styles.modalHeaderTitle, { color: theme.text }]}>
+              Book Details
+            </Text>
             <View style={{ width: 28 }} />
           </View>
 
@@ -200,39 +212,43 @@ export default function HomeScreen() {
           >
             {scannedBook && (
               <>
-                <ThemedText style={styles.bookTitle}>
+                <Text style={[styles.bookTitle, { color: theme.text }]}>
                   {scannedBook.title}
-                </ThemedText>
+                </Text>
                 
                 {scannedBook.subtitle && (
-                  <ThemedText style={styles.bookSubtitle}>
+                  <Text style={[styles.bookSubtitle, { color: theme.text }]}>
                     {scannedBook.subtitle}
-                  </ThemedText>
+                  </Text>
                 )}
                 
                 {scannedBook.description && (
                   <View style={styles.descriptionContainer}>
-                    <ThemedText style={styles.sectionLabel}>Description</ThemedText>
-                    <ThemedText style={styles.bookDescription}>
+                    <Text style={[styles.sectionLabel, { color: theme.text }]}>
+                      Description
+                    </Text>
+                    <Text style={[styles.bookDescription, { color: theme.text }]}>
                       {scannedBook.description}
-                    </ThemedText>
+                    </Text>
                   </View>
                 )}
 
                 {bookCopies !== null && (
                   <View style={styles.descriptionContainer}>
-                    <ThemedText style={styles.sectionLabel}>Available Copies</ThemedText>
-                    <ThemedText style={styles.bookDescription}>
+                    <Text style={[styles.sectionLabel, { color: theme.text }]}>
+                      Available Copies
+                    </Text>
+                    <Text style={[styles.bookDescription, { color: theme.text }]}>
                       {typeof bookCopies === 'object' ? JSON.stringify(bookCopies, null, 2) : bookCopies}
-                    </ThemedText>
+                    </Text>
                   </View>
                 )}
               </>
             )}
           </ScrollView>
-        </ThemedView>
+        </View>
       </Modal>
-    </ThemedView>
+    </View>
   );
 }
 
