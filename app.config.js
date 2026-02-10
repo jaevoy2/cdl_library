@@ -59,7 +59,7 @@ export default {
       PORTAL_ORIGIN: process.env.PORTAL_ORIGIN,
       LIBRARY_API_KEY: process.env.LIBRARY_API_KEY, 
       LIBRARY_API_URL: process.env.LIBRARY_API_URL,
-      LIBRARY_ORIGIN: process.env.LIBRARY_ORIGIN
+      LIBRARY_ORIGIN: process.env.LIBRARY_ORIGIN,
       eas: {
         projectId: "979782ac-b453-4da7-a58d-1826bf78907a"
       }
